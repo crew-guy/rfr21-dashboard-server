@@ -32,7 +32,7 @@ app.post('/api', async(req,res)=>{
     if (err) return "data not found"
     console.log(res.rows)
     client.end()
-    return res.rows
+    res.json(res.rows)
   })}
     catch {
     return "invalid input"
