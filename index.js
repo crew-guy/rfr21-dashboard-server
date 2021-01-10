@@ -1,4 +1,4 @@
-const {pool} = require('./db')
+const {pool, client} = require('./db')
 const {extractTime, extractDate }= require('./functions/helperFuncs')
 const express = require('express');
 const app = express();
@@ -13,6 +13,7 @@ app.use(express.json());
 //  @route POST /api
 
 app.post('/api', async (req, res)=>{
+  await client.connect();
   try {
     // console.log('beginning to process data request');
     // console.log(req.body);    
@@ -24,17 +25,33 @@ app.post('/api', async (req, res)=>{
     const startHour = extractTime(startTime, 'hour')
     const endYear = extractDate(endDate, 'year')
 
+    //! RETURNING SIMPLE VALUES
+    // const resultObj = {
+    //   vehicleId,
+    //   startHour,
+    //   endYear,
+    //   graph_type
+    // }
+    // res.json(JSON.stringify(resultObj))
+
+    //! RETURNING VALUES FROM DB
     console.log('Querying db........');
-    const resultObj = await pool.query("SELECT*FROM dashdata LIMIT 3")
-    console.log('Query returned from db !');
-    if(!resultObj){
-      res.send("Database communication ain't working")
-    }
-    // console.log(resultObj.rows);
-    res.json(resultObj.rows)
-    }catch (error) {
-    console.log(error.message);
-  }
+
+    //? Using client
+    let parameters=[];
+    client.query("SELECT*FROM dashdata LIMIT 3", parameters , (err, resultObj) => {
+      if (err) {err => console.log(err)}
+      console.log(resultObj.rows);
+      res.json(resultObj.rows)
+      console.log('Query returned from db !');
+    })
+    client.end
+
+    //? Using Pool 
+    // const resultObj = await pool.query("SELECT*FROM dashdata LIMIT 3")
+    // res.json(resultObj.rows)
+  }catch (error) {
+   console.log(error.message);}
 })
     
 // FOR DEVELOPMENT
