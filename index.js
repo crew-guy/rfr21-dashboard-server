@@ -1,4 +1,4 @@
-const {pool, client} = require('./db')
+const {pool} = require('./db')
 const {extractTime, extractDate }= require('./functions/helperFuncs')
 const express = require('express');
 const app = express();
@@ -12,54 +12,57 @@ app.use(express.json());
 //  @desc Data is queried on form submission (method = "POST")
 //  @route POST /api
 
-app.post('/api', async (req, res)=>{
-  await client.connect();
+const TIME_COLUMN = "ctime"
+const DATE_COLUMN = "cdate"
+
+app.post('/api', async (req, response)=>{
   try {
-    // console.log('beginning to process data request');
-    // console.log(req.body);    
-    const {vehicleId, date, time, graph_type} = req.body
-    let xAxis = "time"
+  await client.connect()
+  console.log('connected')
+  const {vehicleId,date, time, graph_type} = req.body
 
-    const [startTime, endTime] = time;
-    const [startDate, endDate] = date;
-    const startHour = extractTime(startTime, 'hour')
-    const endYear = extractDate(endDate, 'year')
+  const [startDate,endDate] = date
+  const [startTime,endTime] = time
+  const [startVehicleId,endVehicleId] = vehicleId
 
-    //! RETURNING SIMPLE VALUES
-    // const resultObj = {
-    //   vehicleId,
-    //   startHour,
-    //   endYear,
-    //   graph_type
-    // }
-    // res.json(JSON.stringify(resultObj))
-
-    //! RETURNING VALUES FROM DB
-    console.log('Querying db........');
-
-    //? Using client
-    let parameters=[];
-    client.query("SELECT*FROM dashdata LIMIT 3", parameters , (err, resultObj) => {
-      if (err) {err => console.log(err)}
-      console.log(resultObj.rows);
-      res.json(resultObj.rows)
-      console.log('Query returned from db !');
-    })
-    client.end
-
-    //? Using Pool 
-    // const resultObj = await pool.query("SELECT*FROM dashdata LIMIT 3")
-    // res.json(resultObj.rows)
-  }catch (error) {
-   console.log(error.message);}
+  let parameters = [startDate, endDate, startTime, endTime, startVehicleId, endVehicleId]
+  let xAxis = TIME_COLUMN
+  let id = ''
+  if (startTime[3] == '0' && startTime[4] == '0' && endTime[3] == '5' && endTime[4] == '9') {
+    xAxis = "extract(hour from time)"
+    if (startTime == '00:00:00' && endTime == '23:59:59') {
+      xAxis = DATE_COLUMN
+      if (startDate[0] == 0 && startDate[1] == 1 && endDate[0] == 2 && endDate[1] == 8) {
+        xAxis = "extract(month from date)"
+        if (startDate[3] == 0 && startDate[4] == 1 && endDate[3] == 1 && endDate[4] == 2) {
+          xAxis = "extract(year from date)"}
+        }
+      }
+    }
+    if (startVehicleId != endVehicleId) {
+      id = ", id"
+    }
+    let query = "(select avg(" + graph_type + ") as mean, " + xAxis + " as xAxis from data3 where cdate between $1 and $2 and ctime between $3 and $4 and id between $5 and $6 group by " + xAxis + id + " order by " + xAxis + ")"
+        
+    if (startVehicleId != endVehicleId) {query = "select min(mean), avg(mean) as mean, max(mean), xAxis from " + query + " nested group by xAxis"}
+  client.query(query, parameters, (err, res) => {
+    if (err) return "data not found"
+    console.log(res.rows)
+    client.end()
+    response.json(res.rows)
+  })}
+  catch {
+    response.json('invalid input')
+  }
 })
+
     
 // FOR DEVELOPMENT
-// const port = 5000;
-// app.listen(port, ()=>{
-//   console.log(`Listening on port ${port}....`);
-// })
+const port = 5000;
+app.listen(port, ()=>{
+  console.log(`Listening on port ${port}....`);
+})
 
 // FOR PRODUCION
-const port = process.env.PORT || 5000;
-app.listen(port,()=>{console.log(`Listening on port ${port}`);})
+// const port = process.env.PORT || 5000;
+// app.listen(port,()=>{console.log(`Listening on port ${port}`);})
