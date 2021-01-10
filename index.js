@@ -24,9 +24,12 @@ app.post('/api', async (req, res)=>{
     const startHour = extractTime(startTime, 'hour')
     const endYear = extractDate(endDate, 'year')
 
-    // console.log('Querying db........');
+    console.log('Querying db........');
     const resultObj = await pool.query("SELECT*FROM dashdata LIMIT 3")
-    // console.log('Query returned from db !');
+    console.log('Query returned from db !');
+    if(!resultObj){
+      res.send("Database communication ain't working")
+    }
     // console.log(resultObj.rows);
     res.json(resultObj.rows)
     }catch (error) {
@@ -35,11 +38,11 @@ app.post('/api', async (req, res)=>{
 })
     
 // FOR DEVELOPMENT
-// const port = 5000;
-// app.listen(port, ()=>{
-//   console.log(`Listening on port ${port}....`);
-// })
+const port = 5000;
+app.listen(port, ()=>{
+  console.log(`Listening on port ${port}....`);
+})
 
 // FOR PRODUCION
-const port = process.env.PORT || 5000;
-app.listen(port,()=>{console.log(`Listening on port ${port}`);})
+// const port = process.env.PORT || 5000;
+// app.listen(port,()=>{console.log(`Listening on port ${port}`);})
