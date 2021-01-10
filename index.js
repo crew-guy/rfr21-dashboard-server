@@ -1,4 +1,4 @@
-// const pool = require('./db')
+const pool = require('./db')
 const {extractTime, extractDate }= require('./functions/helperFuncs')
 const express = require('express');
 const app = express();
@@ -24,25 +24,22 @@ app.post('/api', async (req, res)=>{
     const startHour = extractTime(startTime, 'hour')
     const endYear = extractDate(endDate, 'year')
 
-    const resultObj = {
-      vehicleId,
-      startHour,
-      endYear,
-      graph_type
-    }
-    // console.log(resultObj);
-    // console.log(JSON.stringify(resultObj));
-    res.json(JSON.stringify(resultObj))
+    // console.log('Querying db........');
+    const resultObj = await pool.query("SELECT*FROM dashdata LIMIT 3")
+    // console.log('Query returned from db !');
+    // console.log(resultObj.rows);
+    res.json(resultObj.rows)
     }catch (error) {
     console.log(error.message);
   }
 })
     
+// FOR DEVELOPMENT
+const port = 5000;
+app.listen(port, ()=>{
+  console.log(`Listening on port ${port}....`);
+})
 
-// const port = 5000;
-// app.listen(port, ()=>{
-//   console.log(`Listening on port ${port}....`);
-// })
-
-const port = process.env.PORT || 5000;
-app.listen(port,()=>{console.log(`Listening on port ${port}`);})
+// FOR PRODUCION
+// const port = process.env.PORT || 5000;
+// app.listen(port,()=>{console.log(`Listening on port ${port}`);})

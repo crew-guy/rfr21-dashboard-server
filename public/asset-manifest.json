@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.71d0df1d.chunk.css",
-    "main.js": "/static/js/main.823d0878.chunk.js",
-    "main.js.map": "/static/js/main.823d0878.chunk.js.map",
+    "main.css": "/static/css/main.76e77aa0.chunk.css",
+    "main.js": "/static/js/main.867642bc.chunk.js",
+    "main.js.map": "/static/js/main.867642bc.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.c012fedc.js",
     "runtime-main.js.map": "/static/js/runtime-main.c012fedc.js.map",
     "static/js/2.bb469ba2.chunk.js": "/static/js/2.bb469ba2.chunk.js",
     "static/js/2.bb469ba2.chunk.js.map": "/static/js/2.bb469ba2.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.71d0df1d.chunk.css.map": "/static/css/main.71d0df1d.chunk.css.map",
+    "static/css/main.76e77aa0.chunk.css.map": "/static/css/main.76e77aa0.chunk.css.map",
     "static/js/2.bb469ba2.chunk.js.LICENSE.txt": "/static/js/2.bb469ba2.chunk.js.LICENSE.txt",
     "static/media/App.css": "/static/media/Ready Player One.93389b30.otf",
     "static/media/ather.8f960213.png": "/static/media/ather.8f960213.png",
@@ -17,7 +17,7 @@
   "entrypoints": [
     "static/js/runtime-main.c012fedc.js",
     "static/js/2.bb469ba2.chunk.js",
-    "static/css/main.71d0df1d.chunk.css",
-    "static/js/main.823d0878.chunk.js"
+    "static/css/main.76e77aa0.chunk.css",
+    "static/js/main.867642bc.chunk.js"
   ]
 }
