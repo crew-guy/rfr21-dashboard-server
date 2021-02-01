@@ -1,4 +1,4 @@
-const {pool} = require('./db')
+const {pool, client} = require('./db')
 const {extractTime, extractDate }= require('./functions/helperFuncs')
 const express = require('express');
 const app = express();
@@ -12,57 +12,56 @@ app.use(express.json());
 //  @desc Data is queried on form submission (method = "POST")
 //  @route POST /api
 
-const TIME_COLUMN = "ctime"
-const DATE_COLUMN = "cdate"
-
-app.post('/api', async (req, response)=>{
-  try {
-  await client.connect()
+async function execute()
+{
+try {
+  await app.post('/api', async (req, response) => {
+    //console.log(req.body)
+  await pool.connect((error, client, release) => {
+    if (error) (e) => response.json(e)
   console.log('connected')
-  const {vehicleId,date, time, graph_type} = req.body
-
-  const [startDate,endDate] = date
-  const [startTime,endTime] = time
-  const [startVehicleId,endVehicleId] = vehicleId
-
-  let parameters = [startDate, endDate, startTime, endTime, startVehicleId, endVehicleId]
-  let xAxis = TIME_COLUMN
+  const dataRqst = req.body;
+  console.log(dataRqst);
+  let parameters = [dataRqst.dateRqst[0], dataRqst.dateRqst[1], dataRqst.timeRqst[0], dataRqst.timeRqst[1], dataRqst.idRqst[0], dataRqst.idRqst[1]]
+  let xAxis = "time"
   let id = ''
-  if (startTime[3] == '0' && startTime[4] == '0' && endTime[3] == '5' && endTime[4] == '9') {
-    xAxis = "extract(hour from time)"
-    if (startTime == '00:00:00' && endTime == '23:59:59') {
-      xAxis = DATE_COLUMN
-      if (startDate[0] == 0 && startDate[1] == 1 && endDate[0] == 2 && endDate[1] == 8) {
-        xAxis = "extract(month from date)"
-        if (startDate[3] == 0 && startDate[4] == 1 && endDate[3] == 1 && endDate[4] == 2) {
-          xAxis = "extract(year from date)"}
-        }
-      }
-    }
-    if (startVehicleId != endVehicleId) {
-      id = ", id"
-    }
-    let query = "(select avg(" + graph_type + ") as mean, " + xAxis + " as xAxis from data3 where cdate between $1 and $2 and ctime between $3 and $4 and id between $5 and $6 group by " + xAxis + id + " order by " + xAxis + ")"
-        
-    if (startVehicleId != endVehicleId) {query = "select min(mean), avg(mean) as mean, max(mean), xAxis from " + query + " nested group by xAxis"}
+  if (dataRqst.timeRqst[0][3] == '0' && dataRqst.timeRqst[0][4] == '0' && dataRqst.timeRqst[1][3] == '5' && dataRqst.timeRqst[1][4] == '9') {xAxis = "extract(hour from time)"
+  if (dataRqst.timeRqst[0] == '00:00:00' && dataRqst.timeRqst[1] == '23:59:59') {xAxis = "date"
+  if (dataRqst.dateRqst[0][0] == 0 && dataRqst.dateRqst[0][1] == 1 && dataRqst.dateRqst[1][0] == 2 && dataRqst.dateRqst[1][1] == 8) {xAxis = "extract(month from date)"
+  if (dataRqst.dateRqst[0][3] == 0 && dataRqst.dateRqst[0][4] == 1 && dataRqst.dateRqst[1][3] == 1 && dataRqst.dateRqst[1][4] == 2) {xAxis = "extract(year from date)"}}}}
+  if (dataRqst.idRqst[0] != dataRqst.idRqst[1]) {id = ", id"}
+  let query = "(select avg(" + dataRqst.plotRqst + ") as mean, " + xAxis + " as xAxis from dashdata where date between $1 and $2 and time between $3 and $4 and id between $5 and $6 group by " + xAxis + id + " order by " + xAxis + ")"
+  if (dataRqst.idRqst[0] != dataRqst.idRqst[1]) {query = "select min(mean), avg(mean) as mean, max(mean), xAxis from " + query + " nested group by xAxis"}
+  // console.log(query)
   client.query(query, parameters, (err, res) => {
-    if (err) return "data not found"
-    console.log(res.rows)
+    if (err)
+    {
+      console.log('data not found');
+    }
+    // console.log(res.rows)
     client.end()
-    response.json(res.rows)
-  })}
+    response.json(res.rows) 
+  })})})}
   catch {
-    response.json('invalid input')
-  }
-})
+    response.json("invalid input") 
+  }}
+  /*const req = {
+    body: {
+      idRqst: ['EV20201', 'EV20202'],
+      dateRqst: ['01/01/2021', '28/02/2021'],
+      timeRqst: ['00:00:00', '22:59:59'],
+      plotRqst: 'energy'
+    }
+  }*/
+execute()
 
     
 // FOR DEVELOPMENT
-// const port = 5000;
-// app.listen(port, ()=>{
-//   console.log(`Listening on port ${port}....`);
-// })
+const port = 5000;
+app.listen(port, ()=>{
+  console.log(`Listening on port ${port}....`);
+})
 
 // FOR PRODUCION
-const port = process.env.PORT || 5000;
-app.listen(port,()=>{console.log(`Listening on port ${port}`);})
+// const port = process.env.PORT || 5000;
+// app.listen(port,()=>{console.log(`Listening on port ${port}`);})
