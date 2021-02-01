@@ -38,7 +38,7 @@ try {
     {
       console.log('data not found');
     }
-    // console.log(res.rows)
+    console.log(res.rows)
     client.end()
     response.json(res.rows) 
   })})})}
@@ -57,11 +57,11 @@ execute()
 
     
 // FOR DEVELOPMENT
-// const port = 5000;
-// app.listen(port, ()=>{
-//   console.log(`Listening on port ${port}....`);
-// })
+const port = 5000;
+app.listen(port, ()=>{
+  console.log(`Listening on port ${port}....`);
+})
 
 // FOR PRODUCION
-const port = process.env.PORT || 5000;
-app.listen(port,()=>{console.log(`Listening on port ${port}`);})
+// const port = process.env.PORT || 5000;
+// app.listen(port,()=>{console.log(`Listening on port ${port}`);})
