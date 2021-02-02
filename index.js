@@ -5,6 +5,10 @@ const app = express();
 const cors = require('cors')
 require('dotenv').config()
 
+console.log(client)
+console.log(pool)
+console.log(process.env.DB_USERNAME)
+
 app.use(express.static("public"));
 app.use(cors());
 app.use(express.json());
