@@ -38,7 +38,7 @@ try {
     {
       console.log('data not found');
     }
-    console.log(res.rows)
+    // console.log(res.rows)
     client.end()
     response.json(res.rows) 
   })})})}
