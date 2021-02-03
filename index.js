@@ -77,14 +77,14 @@ execute()
 
     
 // FOR DEVELOPMENT
-const port = 5000;
-app.listen(port, ()=>{
-  console.log(`Listening on port ${port}....`);
-})
+// const port = 5000;
+// app.listen(port, ()=>{
+//   console.log(`Listening on port ${port}....`);
+// })
 
 // FOR PRODUCION
-// let server = app.listen(process.env.PORT || 5000, function () {
-//   let port = server.address().port;
-//   console.log("Express is working on port " + port);
-// });
+let server = app.listen(process.env.PORT || 5000, function () {
+  let port = server.address().port;
+  console.log("Express is working on port " + port);
+});
 
