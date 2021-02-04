@@ -5,7 +5,7 @@ const app = express();
 const cors = require('cors')
 require('dotenv').config()
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(cors());
 app.use(express.json());
 
@@ -13,14 +13,6 @@ app.use(express.json());
 //  @route POST /api
 
 const { Client } = require('pg');
-
-// const client = new Client({
-//     user:process.env.DB_USERNAME,
-//     password:process.env.PASSWORD,
-//     host:process.env.HOST,
-//     port: process.env.DB_PORT,
-//     database: process.env.DATABASE,
-// });
 
 const client = new Client(
   {
