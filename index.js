@@ -1,41 +1,27 @@
-// const {pool, client} = require('./db')
+const {pool, client} = require('./db')
 const express = require('express');
 const app = express();
+const cors = require('cors')
 const path = require('path')
 const { generateQuery }= require('./functions/helperFuncs')
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 app.use(express.json());
 
 //  @desc Data is queried on form submission (method = "POST")
 //  @route POST /api
 
-const { Client } = require('pg');
-
-// const client = new Client({
-//     user:process.env.DB_USERNAME,
-//     password:process.env.PASSWORD,
-//     host:process.env.HOST,
-//     port: process.env.DB_PORT,
-//     database: process.env.DATABASE,
-// });
-
-const client = new Client(
-  {
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  }
-)
+// const client = new Client(
+//   {
+//     connectionString: process.env.DATABASE_URL,
+//     ssl: {
+//       rejectUnauthorized: false
+//     }
+//   }
+// )
 
 client.connect()
-
-app.get('/test', async (req, res) =>
-{
-  const value = `test api is working`
-  res.write(value)
-})
 
 app.post('/api', async (req, response) => {  
   console.log(req.body)

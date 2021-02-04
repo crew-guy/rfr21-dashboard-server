@@ -8,11 +8,18 @@ const pool = new Pool({
     database: process.env.DATABASE,
 })
 
+// const client = new Client({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false
+//   }
+// });
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  user:process.env.DB_USERNAME,
+  password:process.env.PASSWORD,
+  host:process.env.HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DATABASE,
 });
 
 module.exports.client = client
