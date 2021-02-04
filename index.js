@@ -1,12 +1,10 @@
 // const {pool, client} = require('./db')
 const express = require('express');
 const app = express();
-const cors = require('cors')
 const path = require('path')
 const { generateQuery }= require('./functions/helperFuncs')
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
 app.use(express.json());
 
 //  @desc Data is queried on form submission (method = "POST")
