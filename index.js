@@ -6,7 +6,7 @@ const cors = require('cors')
 const path = require('path')
 require('dotenv').config()
 
-app.use(express.static(path.join(__dirname,'client/build')));
+app.use(express.static('public'));
 app.use(cors());
 app.use(express.json());
 
