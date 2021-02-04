@@ -1,10 +1,9 @@
 // const {pool, client} = require('./db')
-const { generateQuery }= require('./functions/helperFuncs')
 const express = require('express');
 const app = express();
 const cors = require('cors')
 const path = require('path')
-require('dotenv').config()
+const { generateQuery }= require('./functions/helperFuncs')
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(cors());
