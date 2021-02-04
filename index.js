@@ -1,11 +1,12 @@
 const {pool, client} = require('./db')
+const { generateQuery }= require('./functions/helperFuncs')
 const express = require('express');
 const app = express();
 const cors = require('cors')
 const path = require('path')
-const { generateQuery }= require('./functions/helperFuncs')
+require('dotenv').config()
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("public"));
 app.use(cors());
 app.use(express.json());
 
@@ -17,11 +18,21 @@ app.use(express.json());
 //     connectionString: process.env.DATABASE_URL,
 //     ssl: {
 //       rejectUnauthorized: false
-//     }
-//   }
+
 // )
 
 client.connect()
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+
+
+app.get('/test', async (req, res) =>
+{
+  const value = `test api is working`
+  res.write(value)
+})
 
 app.post('/api', async (req, response) => {  
   console.log(req.body)
