@@ -37,7 +37,6 @@ app.get('/test', async (req, res) =>
 {
   const value = `test api is working`
   res.write(value)
-  res.send(value)
 })
 
 app.post('/api', async (req, response) => {  
