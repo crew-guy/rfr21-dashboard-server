@@ -33,11 +33,12 @@ const client = new Client(
 
 client.connect()
 
-// app.post('/test', async (req, res) =>
-// {
-//   const value = `test api is working`
-//   res.send(value)
-// })
+app.get('/test', async (req, res) =>
+{
+  const value = `test api is working`
+  res.write(value)
+  res.send(value)
+})
 
 app.post('/api', async (req, response) => {  
   console.log(req.body)
