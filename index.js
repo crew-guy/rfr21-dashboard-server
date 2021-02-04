@@ -34,6 +34,11 @@ const client = new Client(
 
 client.connect()
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+
+
 app.get('/test', async (req, res) =>
 {
   const value = `test api is working`
