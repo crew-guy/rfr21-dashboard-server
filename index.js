@@ -3,9 +3,10 @@ const { generateQuery }= require('./functions/helperFuncs')
 const express = require('express');
 const app = express();
 const cors = require('cors')
+const path = require('path')
 require('dotenv').config()
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(cors());
 app.use(express.json());
 
