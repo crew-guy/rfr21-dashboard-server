@@ -5,7 +5,7 @@ const cors = require('cors')
 const path = require('path')
 const { generateQuery }= require('./functions/helperFuncs')
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use(express.json());
 
@@ -32,11 +32,6 @@ const client = new Client(
 )
 
 client.connect()
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
-});
-
 
 app.get('/test', async (req, res) =>
 {
